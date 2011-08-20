@@ -32,6 +32,16 @@
 				});
 			}
 		}
+
+		var words = ["", "K", "M", "G", "T"];
+		function getReadableSize(size) {
+			var i = 0; 
+			while (size >= 1024 && i + 2 < words.length) {
+				i++;
+				size /= 1024.0;
+			}
+			return Math.round(size * 10) / 10 + words[i];
+		}
 	</script>
 	<link rel="stylesheet" type="text/css" href="style.css"/>	
   </head>
@@ -87,7 +97,7 @@
 							</div>
 							<div class="detail">
 								<div class="detailTitle">Size</div>
-								<div class="detailContent">@{$item.size}</div>
+								<div class="detailContent">@{getReadableSize($item.size)}</div>
 							</div>
 						</div>
 					</div>
