@@ -2,26 +2,12 @@
 <html>
   <head>
     <meta charset="UTF-8"/>
-    <title>Smallwhite File Search</title>
+    <title>Online File Search</title>
     <script type="text/javascript" src="lib/jsutils.js"></script>
     <script type="text/javascript" src="lib/jsrl.js"></script>
 	<script type="text/javascript">
 		var keyword, base;
 
-		function txtToJson(txt) {
-			var lines = txt.responseText.split('\n');
-			if (Q.startsWith(lines[0], "Error")) {
-				return { error: lines[0].substr(7) };
-			} else {
-				var list = new Array(lines.length - 3);
-				for (var i = 0; i < lines.length - 3; i++) {
-					var items = lines[i + 2].split(',');
-					list[i] = { type: items[0], size: items[1], date: items[2], name: '/' + items[3] }
-				}
-				return { count: parseInt(lines[0]), base: lines[1], list: list};
-			}
-		}
-		
 		function getDirname(name) {
 			return name.substr(0, name.lastIndexOf('/'));
 		}
@@ -38,8 +24,8 @@
 			kw = Q.trim(kw);
 			if (kw.length > 0) {
 				result.render([{ searching:true }]);
-				Q.ajax("cgi/findall?" + encodeURIComponent(kw), function(data) {
-					var r = txtToJson(data);
+				Q.ajax("cgi/findfiles?" + encodeURIComponent(kw), function(data) {
+					var r = Q.evalJSON(data.responseText);
 					keyword = kw;
 					base = r.base;
 					result.render([r]);
