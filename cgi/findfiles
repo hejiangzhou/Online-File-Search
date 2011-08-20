@@ -9,11 +9,17 @@ def read_files(param):
 	if not conf.DEDICATED_DB_FILE:
 		lines = filter(lambda s: s.startswith(conf.BASE_DIR), lines)
 	res = []
-	for i in xrange(min(len(lines), conf.LIMIT)):
+	count = len(lines)
+	i = 0
+	while (len(res) < conf.LIMIT) and (i < len(lines)):
 		name = lines[i][:-1]
-		st = os.stat(name)
-		res.append({'name': name[len(conf.BASE_DIR):], 'isdir': stat.S_ISDIR(st.st_mode), 'size': st.st_size, 'date': date.fromtimestamp(st.st_mtime).strftime(conf.TIME_STYLE)})
-	return { 'base': conf.BASE_URL, 'count': len(lines), 'list': res }
+		try:
+			st = os.stat(name)
+			res.append({'name': name[len(conf.BASE_DIR):], 'isdir': stat.S_ISDIR(st.st_mode), 'size': st.st_size, 'date': date.fromtimestamp(st.st_mtime).strftime(conf.TIME_STYLE)})
+		except Exception:
+			count -= 1
+		i += 1
+	return { 'base': conf.BASE_URL, 'count': count, 'list': res }
 
 def response(obj):
 	print 'Content-type: text/plain; charset=utf-8'
