@@ -1,0 +1,125 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <meta charset="UTF-8"/>
+    <title>Smallwhite File Search</title>
+    <script type="text/javascript" src="lib/jsutils.js"></script>
+    <script type="text/javascript" src="lib/jsrl.js"></script>
+	<script type="text/javascript">
+		var keyword, base;
+
+		function txtToJson(txt) {
+			var lines = txt.responseText.split('\n');
+			if (Q.startsWith(lines[0], "Error")) {
+				return { error: lines[0].substr(7) };
+			} else {
+				var list = new Array(lines.length - 3);
+				for (var i = 0; i < lines.length - 3; i++) {
+					var items = lines[i + 2].split(',');
+					list[i] = { type: items[0], size: items[1], date: items[2], name: '/' + items[3] }
+				}
+				return { count: parseInt(lines[0]), base: lines[1], list: list};
+			}
+		}
+		
+		function getDirname(name) {
+			return name.substr(0, name.lastIndexOf('/'));
+		}
+			
+		function getBasename(name) {
+			return name.substr(name.lastIndexOf('/') + 1);
+		}
+
+		function getUrl(path) {
+			return base + path;
+		}
+			
+		function search(kw, result) {
+			kw = Q.trim(kw);
+			if (kw.length > 0) {
+				result.render([{ searching:true }]);
+				Q.ajax("cgi/findall?" + encodeURIComponent(kw), function(data) {
+					var r = txtToJson(data);
+					keyword = kw;
+					base = r.base;
+					result.render([r]);
+				});
+			}
+		}
+	</script>
+	<link rel="stylesheet" type="text/css" href="style.css"/>	
+  </head>
+  <body onload="Jsrl.render('root')">
+    <div id="root"><!--
+		@form{, onsubmit:search(#keyword.get(), $TOP.#result), class="search"}
+			<div class="keywordTitle">Search by keyword</div>
+			<div class="keyword">@text{keyword, "", class="keywordInput"}</div>
+			<div class="searchBtn">@submit{"Search"}</div>
+		@end_form
+
+		@ns{result}
+			@if {!$0} @exit @end_if
+			@if {$0.searching}
+				<div class="info">Searching...</div>
+			@elseif {$0.error}
+				<div class="info error">@{$0.error}</div>
+			@elseif {$0.list}
+				<div class="info">
+					Found <div class="fileCount">@{$0.count}</div> in total
+					@if{$0.list.length < $0.count}
+						, only<div class="fileCount">@{$0.list.length}</div>of them is listed here.
+						You need to use a longer keyword
+					@end_if
+					.
+				</div>
+
+				<div class="list">
+				@foreach{item, $0.list}
+					@set{basename, getBasename($item.name)}
+					@set{dirname, getDirname($item.name)}
+					<div class="listItem">
+						<div class="listIcon">
+							<a target="_blank" href="@{getUrl($item.name)}">
+								<img src="img/@{$item.type == 'd' ? "dir" : "file"}.gif"/>
+							</a>
+						</div>
+						<div class="listText">
+							<div class="filename">
+								<a target="_blank" href="@{getUrl($item.name)}">@I{":highlighten", $basename}</a>
+							</div>
+							<div class="detail">
+								<div class="detailTitle">Directory</div>
+								<div class="detailContent">
+									<a target="_blank" href="@{getUrl($dirname)}">
+										@{$dirname}
+									</a>
+								</div>
+							</div>
+							<div class="detail">
+								<div class="detailTitle">Date</div>
+								<div class="detailContent">@{$item.date}</div>
+							</div>
+							<div class="detail">
+								<div class="detailTitle">Size</div>
+								<div class="detailContent">@{$item.size}</div>
+							</div>
+						</div>
+					</div>
+				@end_foreach
+				</div>
+			@end_if
+		@end_ns
+    --></div>
+	<div id="highlighten" style="display:none;"><!--
+			@set{last, 0}
+			@set{kw, keyword.toLowerCase()}
+			@set{name, $0.toLowerCase()}
+			@while{($index = $name.indexOf($kw, $last)) >= 0}
+				@{$0.substring($last, $index)}
+				<div class="highlight">@{$0.substr($index, $kw.length)}</div>
+				@set{last, $index + $kw.length}
+			@end_while
+			@{$0.substr($last)}
+	--></div>
+  </body>
+</html>

@@ -1,0 +1,24 @@
+body { font-family:Times New Roman; background-color: #c0c0c0; }
+input { font-family:Times New Roman; }
+img { border:0; }
+.search { text-align:left; margin:20px 0 20px 5px; }
+.keywordTitle { display:inline; font-family:Arial; font-size:16px; margin:5px; }
+.keyword { display:inline; margin:5px; }
+.keywordInput { width:200px; }
+.searchBtn { display:inline; }
+
+.info { padding-left:10px; }
+.fileCount { display:inline; color:blue; margin:0 5px; font-weight:bold; }
+
+.listItem { float:left; width:100%; }
+.listIcon { float:left; padding:10px 5px 0 10px; }
+.listText { float:left; width:80%; padding:20px 5px; }
+.filename { font-family:Georgia; font-size:25px; padding-bottom:5px; }
+.highlight { display:inline; background-color:yellow; }
+.detail { float:left; margin-left:30px; width:100%; font-size:15px; }
+.detailTitle { float:left; font-family:Arial; width:70px; }
+.detailContent { float:left; font-family:Times New Roman; }
+
+a { text-decoration:none; color:blue; }
+a:hover { color:red; }
+
