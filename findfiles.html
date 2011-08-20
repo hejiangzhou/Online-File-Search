@@ -76,7 +76,7 @@
 					<div class="listItem">
 						<div class="listIcon">
 							<a target="_blank" href="@{getUrl($item.name)}">
-								<img src="img/@{$item.type == 'd' ? "dir" : "file"}.gif"/>
+								<img src="img/@{$item.isdir ? "dir" : "file"}.gif"/>
 							</a>
 						</div>
 						<div class="listText">
@@ -87,7 +87,7 @@
 								<div class="detailTitle">Directory</div>
 								<div class="detailContent">
 									<a target="_blank" href="@{getUrl($dirname)}">
-										@{$dirname}
+										@{$dirname || "/"}
 									</a>
 								</div>
 							</div>
