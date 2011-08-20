@@ -1,0 +1,62 @@
+== About ==
+
+This is a lightweight web application to search local files by keyword. It is
+intended to serve in file-sharing servers with lots of files. Users can find
+needed files by this application before downloading.
+
+
+== License ==
+
+This software is published under GPLv2. You can refer here for a full
+version:
+    www.gnu.org/licenses/gpl-2.0.html
+
+
+== Dependency ==
+
+This application depends on the following software:
+1. Python 2.6.x or 2.7.x
+2. locate, this is available in most Linux release
+3. JSRL (http://code.google.com/p/jsrl), the code is already put in /lib
+   directory of this repository
+
+
+== Support ==
+I do not supply technical support for this application. So any side-effects
+caused by this scripts should be your problems. However, you can contact me
+for discussion.
+
+
+== Installation ==
+
+1. (optional) Generate your locate database.
+   It is recommended to generate a dedicated database file for directorys
+   of your shared files by updatedb.
+
+2. Configure by editing cgi/findfilesconf.py.
+   LIMIT: maximal number of records to output [example: 200]
+   BASE_DIR: the root directory of your shared files
+       [example: '/home/share']
+   BASE_URL: the absolute or relative URL to access BASE_DIR
+       [example: '/files']
+   TIME_STYLE: format for file's last modification date
+       [example: '%m/%d/%Y']
+   DB_FILE: locate database file [example: /var/lib/mlocate/mlocate.db']
+   DEDICATED_DB_FILE: whether DB_FILE only contins files under BASE_DIR
+       [True or False]
+
+3. Configure your http daemon.
+   This is an example of apache configuration:
+
+		Alias /search /dir/of/onlinefilesearch
+		<Location "/search">
+			DirectoryIndex findfiles.html
+		</Location>
+		<Location "/search/cgi">
+			Options +ExecCGI
+			SetHandler cgi-script
+		</Location>
+
+
+Jiangzhou He
+hejiangzhou@gmail.com 
