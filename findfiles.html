@@ -95,10 +95,12 @@
 								<div class="detailTitle">Date</div>
 								<div class="detailContent">@{$item.date}</div>
 							</div>
-							<div class="detail">
-								<div class="detailTitle">Size</div>
-								<div class="detailContent">@{getReadableSize($item.size)}</div>
-							</div>
+							@if{"size" in $item}
+								<div class="detail">
+									<div class="detailTitle">Size</div>
+									<div class="detailContent">@{getReadableSize($item.size)}</div>
+								</div>
+							@end_if
 						</div>
 					</div>
 				@end_foreach
